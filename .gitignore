@@ -1,4 +1,4 @@
-﻿# Python
+# Python
 backend/venv/
 backend/__pycache__/
 backend/**/__pycache__/
@@ -7,7 +7,9 @@ backend/data/temp_resume.pdf
 
 # Node
 frontend/node_modules/
-frontend/dist/
+
 
 # Environment
 .env
+
+frontend/dist/
