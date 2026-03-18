@@ -1,56 +1,71 @@
 ﻿# Smart Job Placement & Skill Gap Analyzer
 
-An AI-powered platform that analyzes resumes, predicts placement probability, and identifies skill gaps based on target job roles.
+An AI-powered full-stack web application that analyzes resumes, identifies skill gaps against target job roles, predicts placement probability, and recommends personalized learning resources.
+
+🔗 **Live Demo:** [https://GoldLion123RP.github.io/smart-job-placement](https://GoldLion123RP.github.io/smart-job-placement)
+🔗 **Backend API:** [https://smart-job-placement.onrender.com](https://smart-job-placement.onrender.com)
+
+---
 
 ## Features
 
 - **Resume Parsing** — Extracts skills, education, and experience from PDF resumes using PyMuPDF and spaCy
-- **Skill Gap Analysis** — Semantic matching between resume skills and target job role requirements using Sentence Transformers
-- **Placement Prediction** — Weighted scoring based on skill count, experience, education, skill coverage, and match score
-- **Smart Recommendations** — Personalized learning resource links for missing skills
+- **Skill Gap Analysis** — TF-IDF cosine similarity matching between resume skills and target job role requirements
+- **Placement Prediction** — Weighted scoring model based on skill count, experience, education, skill coverage, and match score
+- **Course Recommendations** — Curated learning resources from Coursera, Udemy, and YouTube for missing skills
+- **Interview Preparation** — Role-specific interview prep resources and practice links
+- **PDF Report Download** — Generate and download a full skill gap analysis report as PDF
+
+---
 
 ## Tech Stack
 
 | Layer | Technology |
 |---|---|
-| Backend | Flask, scikit-learn, spaCy, Sentence Transformers, PyMuPDF |
-| Frontend | React 18, Vite, Chart.js |
-| Deployment | Render (Backend), GitHub Pages (Frontend) |
+| Backend | Flask, spaCy, scikit-learn, PyMuPDF, gunicorn |
+| Frontend | React 18, Vite, Chart.js, jsPDF |
+| Backend Hosting | Render (Free Tier) |
+| Frontend Hosting | GitHub Pages |
+
+---
 
 ## Project Structure
 
 ```
 smart-job-placement/
 ├── backend/
-│   ├── data/
-│   ├── models/
 │   ├── utils/
-│   │   ├── resume_parser.py       # PDF parsing + skill extraction
-│   │   ├── skill_analyzer.py      # Semantic skill gap analysis
-│   │   └── placement_predictor.py # Placement probability scoring
-│   ├── app.py                     # Flask API
+│   │   ├── resume_parser.py        # PDF parsing + skill extraction
+│   │   ├── skill_analyzer.py       # TF-IDF skill gap analysis
+│   │   ├── placement_predictor.py  # Placement probability scoring
+│   │   └── course_recommender.py   # Course + interview prep recommendations
+│   ├── app.py                      # Flask REST API
 │   ├── requirements.txt
-│   ├── Procfile                   # For Render deployment
-│   └── .env
+│   └── Procfile
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── FileUpload.jsx
-│   │   │   └── Results.jsx
+│   │   │   ├── FileUpload.css
+│   │   │   ├── Results.jsx
+│   │   │   └── Results.css
+│   │   ├── utils/
+│   │   │   └── reportGenerator.js  # PDF report generation
 │   │   ├── App.jsx
 │   │   └── main.jsx
-│   ├── index.html
-│   ├── package.json
-│   └── .env
+│   ├── vite.config.js
+│   └── package.json
 └── README.md
 ```
+
+---
 
 ## Local Setup
 
 ### Prerequisites
 
 - Python 3.11+
-- Node.js v20+ (use a path **without spaces**)
+- Node.js v20+
 - npm
 
 ### Backend
@@ -58,9 +73,8 @@ smart-job-placement/
 ```bash
 cd backend
 python -m venv venv
-venv\Scripts\activate          # Windows
+venv\Scripts\activate
 pip install -r requirements.txt
-pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl
 python app.py
 ```
 
@@ -76,27 +90,27 @@ npm run dev
 
 Frontend runs at `http://localhost:5173`
 
-> **Important:** Keep both terminals running simultaneously. Frontend calls backend at `http://localhost:5000`.
+---
 
 ## API Endpoints
 
 | Method | Endpoint | Description |
 |---|---|---|
 | GET | `/` | Health check |
-| POST | `/api/analyze` | Analyze resume PDF |
+| POST | `/api/analyze` | Analyze resume PDF against target role |
 | GET | `/api/roles` | List available job roles |
 
 ### POST /api/analyze
 
 **Request:** `multipart/form-data`
 - `resume` — PDF file
-- `role` — Target role (`data_scientist`, `software_engineer`, `web_developer`, `ml_engineer`, `data_analyst`)
+- `role` — Target role
 
 **Response:**
 ```json
 {
   "success": true,
-  "skills": { "detected": [...], "categories": {...} },
+  "skills": { "detected": [...], "categories": {} },
   "education": ["B.TECH"],
   "experience": 2,
   "gap_analysis": {
@@ -109,9 +123,14 @@ Frontend runs at `http://localhost:5173`
     "probability": 58.5,
     "confidence": "Medium"
   },
-  "recommendations": [...]
+  "recommendations": {
+    "courses": [...],
+    "interview_prep": [...]
+  }
 }
 ```
+
+---
 
 ## Supported Job Roles
 
@@ -121,26 +140,40 @@ Frontend runs at `http://localhost:5173`
 - `ml_engineer`
 - `data_analyst`
 
-## Known Issues & Notes
-
-- Project path must have **no spaces** — use `E:\Projects\smart-job-placement` (Node.js v24 on Windows breaks with spaces in paths)
-- `sentence-transformers==2.7.0` required — v2.2.2 is incompatible with `huggingface_hub>=0.36`
-- spaCy model must be installed manually via direct wheel URL (see setup above)
-- Vite uses `VITE_` env prefix — not `REACT_APP_`
+---
 
 ## Deployment
 
-### Backend (Render)
-1. Push `backend/` folder to GitHub
-2. Create new Web Service on [render.com](https://render.com)
-3. Set build command: `pip install -r requirements.txt`
-4. Set start command: `gunicorn app:app`
+### Backend — Render
+1. Push `backend/` to GitHub
+2. Create Web Service on [render.com](https://render.com)
+3. Root directory: `backend`
+4. Build command: `pip install -r requirements.txt`
+5. Start command: `gunicorn app:app --bind 0.0.0.0:$PORT`
 
-### Frontend (GitHub Pages)
-1. Update `VITE_API_URL` in `frontend/.env` with your Render backend URL
-2. Run `npm run build`
-3. Deploy `dist/` folder to GitHub Pages
+### Frontend — GitHub Pages
+```bash
+cd frontend
+npm run build
+cd ..
+git add frontend/dist -f
+git commit -m "Deploy frontend"
+git subtree push --prefix frontend/dist origin gh-pages
+```
+Enable Pages on `gh-pages` branch in repository Settings.
 
-## Developer
+---
 
-**Rahul Pal** 
+## Known Issues & Notes
+
+- `torch` and `sentence-transformers` removed — exceeded Render free tier 512MB RAM limit
+- spaCy model installed via direct wheel URL for Render compatibility
+- Vite uses `VITE_` env prefix — not `REACT_APP_`
+- Node.js path must have no spaces on Windows
+
+---
+
+## Developer 👤
+
+**Rahul Pal** — [GitHub](https://github.com/GoldLion123RP)
+
