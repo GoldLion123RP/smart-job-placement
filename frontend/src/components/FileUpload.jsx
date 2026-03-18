@@ -9,17 +9,40 @@ const roles = [
   'data_analyst'
 ];
 
+const roleDisplayNames = {
+  'data_scientist': 'Data Scientist',
+  'software_engineer': 'Software Engineer',
+  'web_developer': 'Web Developer',
+  'ml_engineer': 'ML Engineer',
+  'data_analyst': 'Data Analyst'
+};
+
 function FileUpload({ onAnalyze, loading }) {
   const [file, setFile] = useState(null);
   const [role, setRole] = useState('data_scientist');
+  const [error, setError] = useState('');
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      if (selectedFile.type !== 'application/pdf') {
+        setError('Please upload a PDF file only');
+        setFile(null);
+        return;
+      }
+      if (selectedFile.size > 5 * 1024 * 1024) {
+        setError('File size should not exceed 5MB');
+        setFile(null);
+        return;
+      }
+      setError('');
+      setFile(selectedFile);
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (file) {
+    if (file && !error) {
       onAnalyze(file, role);
     }
   };
@@ -28,31 +51,53 @@ function FileUpload({ onAnalyze, loading }) {
     <div className="upload-container">
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Upload Resume (PDF)</label>
+          <label>📄 Upload Resume (PDF only, max 5MB)</label>
           <input
             type="file"
             accept=".pdf"
             onChange={handleFileChange}
+            disabled={loading}
             required
           />
-          {file && <p className="file-name">{file.name}</p>}
+          {file && !error && (
+            <p className="file-name">✅ {file.name} ({(file.size / 1024).toFixed(2)} KB)</p>
+          )}
+          {error && <p className="error-message">❌ {error}</p>}
         </div>
 
         <div className="form-group">
-          <label>Target Job Role</label>
-          <select value={role} onChange={(e) => setRole(e.target.value)}>
+          <label>🎯 Target Job Role</label>
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            disabled={loading}
+          >
             {roles.map(r => (
               <option key={r} value={r}>
-                {r.replace('_', ' ').toUpperCase()}
+                {roleDisplayNames[r]}
               </option>
             ))}
           </select>
         </div>
 
-        <button type="submit" disabled={loading || !file}>
-          {loading ? 'Analyzing...' : 'Analyze Resume'}
+        <button type="submit" disabled={loading || !file || error}>
+          {loading ? (
+            <>
+              <span className="spinner"></span>
+              Analyzing Resume...
+            </>
+          ) : (
+            '🚀 Analyze Resume'
+          )}
         </button>
       </form>
+
+      {loading && (
+        <div className="loading-info">
+          <p>⏱️ This may take 10-30 seconds (free tier server)</p>
+          <p>🔍 Parsing PDF, extracting skills, analyzing gaps...</p>
+        </div>
+      )}
     </div>
   );
 }
