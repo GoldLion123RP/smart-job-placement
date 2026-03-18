@@ -1,9 +1,9 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import FileUpload from './components/FileUpload';
 import Results from './components/Results';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || 'https://smart-job-placement.onrender.com';
 
 function App() {
   const [results, setResults] = useState(null);
