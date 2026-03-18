@@ -4,6 +4,7 @@ import os
 from utils.resume_parser import ResumeParser
 from utils.skill_analyzer import SkillGapAnalyzer
 from utils.placement_predictor import PlacementPredictor
+from utils.course_recommender import CourseRecommender
 
 app = Flask(__name__)
 CORS(app, origins=["*"])
@@ -11,6 +12,7 @@ CORS(app, origins=["*"])
 parser = ResumeParser()
 analyzer = SkillGapAnalyzer()
 predictor = PlacementPredictor()
+course_recommender = CourseRecommender()
 
 @app.route("/")
 def home():
@@ -41,6 +43,9 @@ def analyze_resume():
             "experience": experience
         }, gap_analysis)
 
+        course_recs = course_recommender.get_recommendations(gap_analysis["missing_skills"])
+        interview_prep = course_recommender.get_interview_prep(target_role)
+
         os.remove(temp_path)
 
         return jsonify({
@@ -50,7 +55,10 @@ def analyze_resume():
             "experience": experience,
             "gap_analysis": gap_analysis,
             "placement_probability": placement_score,
-            "recommendations": analyzer.get_recommendations(gap_analysis["missing_skills"])
+            "recommendations": {
+                "courses": course_recs,
+                "interview_prep": interview_prep
+            }
         })
 
     except Exception as e:
