@@ -1,6 +1,11 @@
 ﻿from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+import logging
+import re
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 ROLE_SKILLS = {
     "data_scientist": ["python", "machine learning", "deep learning", "tensorflow", "pytorch", "sql", "statistics", "pandas", "numpy", "scikit-learn", "data visualization", "nlp", "computer vision"],
@@ -28,23 +33,50 @@ RESOURCES = {
 
 class SkillGapAnalyzer:
     def __init__(self):
-        self.vectorizer = TfidfVectorizer()
+        # Optimization: Use lazy initialization for vectorizer
+        self._vectorizer = None
+        self._required_skills = ROLE_SKILLS
+
+    @property
+    def vectorizer(self):
+        """Lazy initialization of TF-IDF vectorizer"""
+        if self._vectorizer is None:
+            self._vectorizer = TfidfVectorizer()
+        return self._vectorizer
 
     def analyze_gap(self, skills, target_role):
-        detected = [s.lower() for s in skills.get("detected", [])]
-        required = ROLE_SKILLS.get(target_role, [])
+        # Validate input
+        if not skills or not isinstance(skills, dict):
+            logger.warning("Invalid skills input provided")
+            skills = {"detected": []}
+        
+        detected = [s.lower() for s in skills.get("detected", []) if isinstance(s, str)]
+        required = self._required_skills.get(target_role, [])
 
-        matched = [s for s in required if any(s in d or d in s for d in detected)]
+        # Optimization: Use set operations for faster matching
+        detected_set = set(detected)
+        
+        # Pre-compile word boundary pattern for faster matching
+        detected_text = ' '.join(detected)
+        
+        matched = []
+        for skill in required:
+            skill_lower = skill.lower()
+            # Check for exact match in set OR word boundary match in detected text
+            if skill_lower in detected_set or re.search(r'\b' + re.escape(skill_lower) + r'\b', detected_text):
+                matched.append(skill)
+        
         missing = [s for s in required if s not in matched]
 
         skill_coverage = round(len(matched) / len(required) * 100, 2) if required else 0
 
+        # Calculate match score using TF-IDF similarity
         if detected and required:
-            all_skills = detected + required
             try:
                 tfidf = self.vectorizer.fit_transform([" ".join(detected), " ".join(required)])
-                match_score = round(float(cosine_similarity(tfidf[0], tfidf[1])[0][0]) * 100, 2)
-            except:
+                match_score = round(float(cosine_similarity(tfidf[0:1], tfidf[1:2])[0][0]) * 100, 2)
+            except (ValueError, ZeroDivisionError) as e:
+                logger.warning(f"TF-IDF calculation failed: {e}")
                 match_score = skill_coverage
         else:
             match_score = 0

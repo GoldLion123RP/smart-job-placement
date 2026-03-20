@@ -109,3 +109,79 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+/* Error banner styles */
+.error-banner {
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 20px auto;
+  max-width: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.error-banner p {
+  color: #dc2626;
+  margin: 0;
+  font-size: 14px;
+}
+
+.error-banner button {
+  background: transparent;
+  border: none;
+  color: #dc2626;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: underline;
+  padding: 4px 8px;
+}
+
+.error-banner button:hover {
+  color: #b91c1c;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .error-banner {
+    background: rgba(220, 38, 38, 0.15);
+    border-color: rgba(220, 38, 38, 0.3);
+  }
+  
+  .error-banner p,
+  .error-banner button {
+    color: #fca5a5;
+  }
+}
+
+/* Reset button styles */
+.reset-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 20px auto;
+  display: block;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.reset-btn:hover {
+  background: #9333ea;
+  transform: translateY(-1px);
+}
+
+.reset-btn:active {
+  transform: translateY(0);
+}
+
+.results-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useState, useCallback } from 'react';
 import './FileUpload.css';
 
 const roles = [
@@ -17,35 +17,64 @@ const roleDisplayNames = {
   'data_analyst': 'Data Analyst'
 };
 
+// Security: File size limit (5MB)
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
 function FileUpload({ onAnalyze, loading }) {
   const [file, setFile] = useState(null);
   const [role, setRole] = useState('data_scientist');
   const [error, setError] = useState('');
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      if (selectedFile.type !== 'application/pdf') {
-        setError('Please upload a PDF file only');
-        setFile(null);
-        return;
-      }
-      if (selectedFile.size > 5 * 1024 * 1024) {
-        setError('File size should not exceed 5MB');
-        setFile(null);
-        return;
-      }
-      setError('');
-      setFile(selectedFile);
+  const handleFileChange = useCallback((e) => {
+    const selectedFile = e.target.files?.[0];
+    
+    if (!selectedFile) {
+      return;
     }
-  };
 
-  const handleSubmit = (e) => {
+    // Security: Validate file type
+    if (selectedFile.type !== 'application/pdf') {
+      setError('Please upload a PDF file only');
+      setFile(null);
+      return;
+    }
+    
+    // Security: Validate file extension as additional check
+    const fileName = selectedFile.name.toLowerCase();
+    if (!fileName.endsWith('.pdf')) {
+      setError('Please upload a PDF file only');
+      setFile(null);
+      return;
+    }
+
+    // Security: Validate file size
+    if (selectedFile.size > MAX_FILE_SIZE) {
+      setError('File size should not exceed 5MB');
+      setFile(null);
+      return;
+    }
+    
+    // Security: Validate file name for potential path traversal
+    if (selectedFile.name.includes('..') || selectedFile.name.includes('/') || selectedFile.name.includes('\\')) {
+      setError('Invalid file name');
+      setFile(null);
+      return;
+    }
+
+    setError('');
+    setFile(selectedFile);
+  }, []);
+
+  const handleRoleChange = useCallback((e) => {
+    setRole(e.target.value);
+  }, []);
+
+  const handleSubmit = useCallback((e) => {
     e.preventDefault();
     if (file && !error) {
       onAnalyze(file, role);
     }
-  };
+  }, [file, error, onAnalyze, role]);
 
   return (
     <div className="upload-container">
@@ -69,7 +98,7 @@ function FileUpload({ onAnalyze, loading }) {
           <label>🎯 Target Job Role</label>
           <select
             value={role}
-            onChange={(e) => setRole(e.target.value)}
+            onChange={handleRoleChange}
             disabled={loading}
           >
             {roles.map(r => (
