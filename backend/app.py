@@ -49,9 +49,9 @@ except Exception as e:
 def validate_role(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        # Skip validation if roles list is empty (fallback mode)
+        # Fail closed if roles are unavailable to avoid accepting arbitrary input
         if not VALID_ROLES:
-            return f(*args, **kwargs)
+            return jsonify({"error": "Service temporarily unavailable. Role configuration not loaded."}), 503
         
         role = request.form.get("role", "data_scientist")
         if role not in VALID_ROLES:

@@ -78,7 +78,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Backend runs at `http://localhost:5000`
+Backend runs at `http://localhost:10000`
 
 ### Frontend
 

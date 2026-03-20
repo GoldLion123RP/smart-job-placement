@@ -46,6 +46,7 @@ function App() {
     try {
       const response = await fetch(`${API_URL}/api/analyze`, {
         method: 'POST',
+        body: formData,
         // Security: Don't include credentials unless necessary
         // body is FormData, so Content-Type is set automatically with boundary
       });
