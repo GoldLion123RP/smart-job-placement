@@ -1,35 +1,115 @@
-﻿.error-message {
-  color: #dc3545;
-  margin-top: 10px;
-  font-weight: bold;
-  font-size: 14px;
+﻿.upload-container {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+
+.upload-container form {
+  display: grid;
+  gap: 16px;
+}
+
+.form-group {
+  text-align: left;
+}
+
+.form-group label {
+  display: inline-block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.form-group input[type='file'],
+.form-group select {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface-soft);
+  color: var(--text);
+  padding: 12px 14px;
+}
+
+.form-group input[type='file']:focus,
+.form-group select:focus {
+  outline: 2px solid rgba(26, 115, 232, 0.35);
+  border-color: var(--primary);
+}
+
+.file-name {
+  margin-top: 8px;
+  color: var(--success);
+  font-size: 13px;
+}
+
+.error-message {
+  margin-top: 8px;
+  color: var(--danger);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.upload-container button[type='submit'] {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-weight: 600;
+  font-size: 15px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+  color: #fff;
+  cursor: pointer;
+  justify-self: start;
+  min-width: 190px;
+  box-shadow: 0 10px 16px rgba(26, 115, 232, 0.22);
+}
+
+.upload-container button[type='submit']:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 .spinner {
   display: inline-block;
   width: 16px;
   height: 16px;
-  border: 3px solid rgba(255,255,255,.3);
+  border: 2px solid rgba(255, 255, 255, 0.4);
   border-radius: 50%;
   border-top-color: #fff;
-  animation: spin 1s ease-in-out infinite;
-  margin-right: 10px;
+  animation: spin 0.9s linear infinite;
+  margin-right: 8px;
+  vertical-align: text-bottom;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-info {
-  margin-top: 20px;
-  padding: 15px;
-  background: #fff3cd;
-  border: 2px solid #ffc107;
-  border-radius: 8px;
-  text-align: center;
+  margin-top: 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(234, 134, 0, 0.35);
+  background: rgba(234, 134, 0, 0.08);
+  padding: 12px;
+  text-align: left;
 }
 
 .loading-info p {
-  margin: 5px 0;
-  color: #856404;
+  color: #985e00;
+  font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  .upload-container {
+    padding: 16px;
+  }
+
+  .upload-container button[type='submit'] {
+    width: 100%;
+    justify-self: stretch;
+  }
 }
