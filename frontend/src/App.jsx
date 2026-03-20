@@ -4,7 +4,7 @@ import FileUpload from './components/FileUpload';
 import Results from './components/Results';
 
 // Security: Validate API URL
-// Default to Render.com backend URL
+// Default to local backend URL for development
 const getApiUrl = () => {
   // Check for environment variable first
   const envUrl = import.meta.env.VITE_API_URL;
@@ -15,16 +15,16 @@ const getApiUrl = () => {
       // Only allow http/https
       if (url.protocol !== 'http:' && url.protocol !== 'https:') {
         console.warn('Invalid API URL protocol, using default');
-        return 'https://smart-job-placement.onrender.com';
+        return 'http://localhost:10000';
       }
       return envUrl;
     } catch {
       console.warn('Invalid API URL format, using default');
-      return 'https://smart-job-placement.onrender.com';
+      return 'http://localhost:10000';
     }
   }
-  // Default to Render.com backend
-  return 'https://smart-job-placement.onrender.com';
+  // Default to local backend
+  return 'http://localhost:10000';
 };
 
 // Show warning if API URL is not configured

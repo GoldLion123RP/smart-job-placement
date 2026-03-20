@@ -12,9 +12,12 @@ app = Flask(__name__)
 # For development, use specific origins; for production, configure properly
 # CORS Configuration for GitHub Pages and local development
 # Add your GitHub Pages URL to this list
-CORS_ORIGINS = os.environ.get('CORS_ORIGINS', 'http://localhost:5173,http://localhost:3000,https://goldlion123rp.github.io')
-# Also allow GitHub Pages subdirectory
-cors_origins = CORS_ORIGINS.split(',') + ['https://goldlion123rp.github.io']
+CORS_ORIGINS = os.environ.get('CORS_ORIGINS', 'http://localhost:5173,http://localhost:3000')
+# Also allow GitHub Pages URL from environment variable if provided
+github_pages = os.environ.get('GITHUB_PAGES_URL', '')
+cors_origins = CORS_ORIGINS.split(',')
+if github_pages:
+    cors_origins.append(github_pages)
 
 CORS(app, 
     origins=cors_origins,
@@ -46,6 +49,10 @@ except Exception as e:
 def validate_role(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        # Skip validation if roles list is empty (fallback mode)
+        if not VALID_ROLES:
+            return f(*args, **kwargs)
+        
         role = request.form.get("role", "data_scientist")
         if role not in VALID_ROLES:
             return jsonify({"error": "Invalid role specified"}), 400

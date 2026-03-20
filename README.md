@@ -84,11 +84,23 @@ Backend runs at `http://localhost:5000`
 
 ```bash
 cd frontend
+copy .env.example .env.local
 npm install
 npm run dev
 ```
 
 Frontend runs at `http://localhost:5173`
+
+### Environment Files
+
+- Use `frontend/.env.example` as a public template (safe to commit).
+- Put real values in `frontend/.env.local` (never commit).
+- Recommended local values:
+
+```env
+VITE_API_URL=https://smart-job-placement.onrender.com
+GITHUB_PAGES_URL=https://goldlion123rp.github.io
+```
 
 ---
 
