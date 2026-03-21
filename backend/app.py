@@ -84,10 +84,11 @@ def analyze_resume():
         if not filename.endswith('.pdf'):
             return jsonify({"error": "Only PDF files are allowed"}), 400
         
-        # Security: Validate file content starts with PDF magic bytes
-        file_content = file.read(5)
+        # Security: Validate file contains PDF magic bytes near the beginning.
+        # Some valid PDFs can include leading bytes before the %PDF- header.
+        file_content = file.read(1024)
         file.seek(0)  # Reset file pointer
-        if file_content != b'%PDF-':
+        if b'%PDF-' not in file_content:
             return jsonify({"error": "Invalid PDF file"}), 400
 
         target_role = request.form.get("role", "data_scientist")

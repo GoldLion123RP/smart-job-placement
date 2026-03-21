@@ -40,6 +40,9 @@ const getFriendlyErrorMessage = (error, statusCode, apiHealthy) => {
   const defaultHelp = `Failed to analyze resume.\n\nTry this:\n1) Confirm backend URL in .env.local (VITE_API_URL).\n2) Ensure backend server is running and reachable.\n3) Retry after a few seconds (free-tier cold starts can be slow).`;
 
   if (statusCode === 400) {
+    if (typeof error?.message === 'string' && error.message.trim()) {
+      return error.message;
+    }
     return 'Request was rejected. Please upload a valid PDF and choose a supported role.';
   }
 
