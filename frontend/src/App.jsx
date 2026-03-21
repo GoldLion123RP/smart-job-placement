@@ -3,9 +3,15 @@ import './App.css';
 import FileUpload from './components/FileUpload';
 import Results from './components/Results';
 
+const PROD_API_URL = 'https://smart-job-placement.onrender.com';
+const LOCAL_API_URL = 'http://localhost:10000';
+
 // Security: Validate API URL
-// Default to local backend URL for development
+// Use Render backend in production and localhost for local development.
 const getApiUrl = () => {
+  const isProductionSite = import.meta.env.PROD || window.location.hostname.includes('github.io');
+  const fallbackUrl = isProductionSite ? PROD_API_URL : LOCAL_API_URL;
+
   // Check for environment variable first
   const envUrl = import.meta.env.VITE_API_URL;
   if (envUrl) {
@@ -15,16 +21,16 @@ const getApiUrl = () => {
       // Only allow http/https
       if (url.protocol !== 'http:' && url.protocol !== 'https:') {
         console.warn('Invalid API URL protocol, using default');
-        return 'http://localhost:10000';
+        return fallbackUrl;
       }
       return envUrl;
     } catch {
       console.warn('Invalid API URL format, using default');
-      return 'http://localhost:10000';
+      return fallbackUrl;
     }
   }
-  // Default to local backend
-  return 'http://localhost:10000';
+  // Default based on environment
+  return fallbackUrl;
 };
 
 // Show warning if API URL is not configured
