@@ -164,15 +164,21 @@ GITHUB_PAGES_URL=https://goldlion123rp.github.io
 5. Start command: `gunicorn app:app --bind 0.0.0.0:$PORT`
 
 ### Frontend — GitHub Pages
+Enable Pages in repository Settings with source branch set to `gh-pages`.
+
+Frontend deployment is automated via GitHub Actions in `.github/workflows/deploy-frontend.yml`.
+
+On every push to `main` that changes `frontend/**`, the workflow will:
+1. Install frontend dependencies with `npm ci`
+2. Build the app with `npm run build`
+3. Publish `frontend/dist` to the `gh-pages` branch
+
+If you need to run a local production build check:
+
 ```bash
 cd frontend
 npm run build
-cd ..
-git add frontend/dist -f
-git commit -m "Deploy frontend"
-git subtree push --prefix frontend/dist origin gh-pages
 ```
-Enable Pages on `gh-pages` branch in repository Settings.
 
 ---
 
