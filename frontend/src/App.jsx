@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import './App.css';
 import FileUpload from './components/FileUpload';
 import Results from './components/Results';
+import { BackgroundGradientAnimation } from '@/components/ui/background-gradient-animation';
 
 const PROD_API_URL = 'https://smart-job-placement.onrender.com';
 const LOCAL_API_URL = 'http://localhost:10000';
@@ -182,58 +183,65 @@ function App() {
   }, [hasSelectedFile, loading, results]);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <div className="hero-top-row">
-          <div className={`status-pill ${apiHealthy ? 'ok' : apiHealthy === false ? 'down' : 'checking'}`}>
-            {apiHealthy ? 'API Connected' : apiHealthy === false ? 'API Unreachable' : 'Checking API...'}
-          </div>
-          <span className="hero-chip">AI Career Readiness Suite</span>
-        </div>
-        <h1>
-          Smart Job Placement
-          <span className="title-accent"> Analyzer</span>
-        </h1>
-        <p className="hero-subtitle">Upload your resume, benchmark your skills, and get a focused learning path in under a minute.</p>
-        <div className="hero-steps" aria-hidden="true">
-          <span className={getStepClass('upload')}>
-            <span className="step-check">✔</span>
-            01 Upload
-          </span>
-          <span className={getStepClass('analyze')}>
-            <span className="step-check">✔</span>
-            02 Analyze
-          </span>
-          <span className={getStepClass('improve')}>
-            <span className="step-check">✔</span>
-            03 Improve
-          </span>
-        </div>
-      </header>
-      <main className="App-main">
-        {!results ? (
-          <>
-            <FileUpload onAnalyze={handleAnalyze} loading={loading} onUploadStateChange={setHasSelectedFile} />
-            {error && (
-              <div className="error-banner">
-                <p>{error}</p>
-                <div className="error-actions">
-                  <button className="retry-btn" onClick={() => setError(null)}>Try Again</button>
-                  <button onClick={() => setError(null)}>Dismiss</button>
-                </div>
+    <>
+      <div className="app-background" aria-hidden="true">
+        <BackgroundGradientAnimation containerClassName="h-full w-full" />
+      </div>
+      <div className="app-layout">
+        <div className="App">
+          <header className="App-header">
+            <div className="hero-top-row">
+              <div className={`status-pill ${apiHealthy ? 'ok' : apiHealthy === false ? 'down' : 'checking'}`}>
+                {apiHealthy ? 'API Connected' : apiHealthy === false ? 'API Unreachable' : 'Checking API...'}
+              </div>
+              <span className="hero-chip">AI Career Readiness Suite</span>
+            </div>
+            <h1>
+              Smart Job Placement
+              <span className="title-accent"> Analyzer</span>
+            </h1>
+            <p className="hero-subtitle">Upload your resume, benchmark your skills, and get a focused learning path in under a minute.</p>
+            <div className="hero-steps" aria-hidden="true">
+              <span className={getStepClass('upload')}>
+                <span className="step-check">✔</span>
+                01 Upload
+              </span>
+              <span className={getStepClass('analyze')}>
+                <span className="step-check">✔</span>
+                02 Analyze
+              </span>
+              <span className={getStepClass('improve')}>
+                <span className="step-check">✔</span>
+                03 Improve
+              </span>
+            </div>
+          </header>
+          <main className="App-main">
+            {!results ? (
+              <>
+                <FileUpload onAnalyze={handleAnalyze} loading={loading} onUploadStateChange={setHasSelectedFile} />
+                {error && (
+                  <div className="error-banner">
+                    <p>{error}</p>
+                    <div className="error-actions">
+                      <button className="retry-btn" onClick={() => setError(null)}>Try Again</button>
+                      <button onClick={() => setError(null)}>Dismiss</button>
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="results-wrapper">
+                <Results data={results} />
+                <button className="reset-btn" onClick={handleReset}>
+                  🔄 Analyze Another Resume
+                </button>
               </div>
             )}
-          </>
-        ) : (
-          <div className="results-wrapper">
-            <Results data={results} />
-            <button className="reset-btn" onClick={handleReset}>
-              🔄 Analyze Another Resume
-            </button>
-          </div>
-        )}
-      </main>
-    </div>
+          </main>
+        </div>
+      </div>
+    </>
   );
 }
 

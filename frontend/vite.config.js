@@ -34,5 +34,10 @@ function copyGitHubPagesFiles() {
 
 export default defineConfig({
   plugins: [react(), copyGitHubPagesFiles()],
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, './src'),
+    },
+  },
   base: '/smart-job-placement/',
 })

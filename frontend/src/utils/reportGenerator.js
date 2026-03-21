@@ -1,5 +1,5 @@
-﻿import jsPDF from "jspdf";
-import "jspdf-autotable";
+﻿import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export const generatePDFReport = (data) => {
   const doc = new jsPDF();
@@ -23,21 +23,43 @@ export const generatePDFReport = (data) => {
     ["Confidence Level", data.placement_probability.confidence]
   ];
 
-  doc.autoTable({ startY: 50, head: [["Metric", "Value"]], body: metricsData, theme: "grid", headStyles: { fillColor: [102, 126, 234] } });
+  autoTable(doc, {
+    startY: 50,
+    head: [["Metric", "Value"]],
+    body: metricsData,
+    theme: "grid",
+    headStyles: { fillColor: [102, 126, 234] },
+  });
 
-  let currentY = doc.lastAutoTable.finalY + 15;
+  let currentY = (doc.lastAutoTable?.finalY ?? 50) + 15;
   doc.text("Matched Skills", 20, currentY);
-  doc.autoTable({ startY: currentY + 5, body: [[data.gap_analysis.matched_skills.join(", ")]], theme: "plain", styles: { fillColor: [212, 237, 218] } });
+  autoTable(doc, {
+    startY: currentY + 5,
+    body: [[data.gap_analysis.matched_skills.join(", ")]],
+    theme: "plain",
+    styles: { fillColor: [212, 237, 218] },
+  });
 
-  currentY = doc.lastAutoTable.finalY + 10;
+  currentY = (doc.lastAutoTable?.finalY ?? currentY + 5) + 10;
   doc.text("Skills to Develop", 20, currentY);
-  doc.autoTable({ startY: currentY + 5, body: [[data.gap_analysis.missing_skills.join(", ")]], theme: "plain", styles: { fillColor: [248, 215, 218] } });
+  autoTable(doc, {
+    startY: currentY + 5,
+    body: [[data.gap_analysis.missing_skills.join(", ")]],
+    theme: "plain",
+    styles: { fillColor: [248, 215, 218] },
+  });
 
   if (data.recommendations?.courses) {
     doc.addPage();
     doc.text("Recommended Learning Path", 20, 20);
     const courseData = data.recommendations.courses.map(rec => [rec.skill, rec.course, rec.provider, rec.duration]);
-    doc.autoTable({ startY: 25, head: [["Skill", "Course", "Provider", "Duration"]], body: courseData, theme: "striped", headStyles: { fillColor: [102, 126, 234] } });
+    autoTable(doc, {
+      startY: 25,
+      head: [["Skill", "Course", "Provider", "Duration"]],
+      body: courseData,
+      theme: "striped",
+      headStyles: { fillColor: [102, 126, 234] },
+    });
   }
 
   doc.save("skill-gap-report.pdf");
