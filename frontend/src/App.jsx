@@ -70,6 +70,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [apiHealthy, setApiHealthy] = useState(null);
+  const [hasSelectedFile, setHasSelectedFile] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -157,7 +158,28 @@ function App() {
   const handleReset = useCallback(() => {
     setResults(null);
     setError(null);
+    setHasSelectedFile(false);
   }, []);
+
+  const getStepClass = useCallback((step) => {
+    if (step === 'upload') {
+      if (results || loading || hasSelectedFile) return 'hero-step complete';
+      return 'hero-step active';
+    }
+
+    if (step === 'analyze') {
+      if (results) return 'hero-step complete';
+      if (loading) return 'hero-step active';
+      return 'hero-step';
+    }
+
+    if (step === 'improve') {
+      if (results) return 'hero-step active complete';
+      return 'hero-step';
+    }
+
+    return 'hero-step';
+  }, [hasSelectedFile, loading, results]);
 
   return (
     <div className="App">
@@ -174,19 +196,31 @@ function App() {
         </h1>
         <p className="hero-subtitle">Upload your resume, benchmark your skills, and get a focused learning path in under a minute.</p>
         <div className="hero-steps" aria-hidden="true">
-          <span>01 Upload</span>
-          <span>02 Analyze</span>
-          <span>03 Improve</span>
+          <span className={getStepClass('upload')}>
+            <span className="step-check">✔</span>
+            01 Upload
+          </span>
+          <span className={getStepClass('analyze')}>
+            <span className="step-check">✔</span>
+            02 Analyze
+          </span>
+          <span className={getStepClass('improve')}>
+            <span className="step-check">✔</span>
+            03 Improve
+          </span>
         </div>
       </header>
       <main className="App-main">
         {!results ? (
           <>
-            <FileUpload onAnalyze={handleAnalyze} loading={loading} />
+            <FileUpload onAnalyze={handleAnalyze} loading={loading} onUploadStateChange={setHasSelectedFile} />
             {error && (
               <div className="error-banner">
                 <p>{error}</p>
-                <button onClick={() => setError(null)}>Dismiss</button>
+                <div className="error-actions">
+                  <button className="retry-btn" onClick={() => setError(null)}>Try Again</button>
+                  <button onClick={() => setError(null)}>Dismiss</button>
+                </div>
               </div>
             )}
           </>

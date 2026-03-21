@@ -5,6 +5,7 @@
 }
 
 .App-header {
+  isolation: isolate;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.06) 100%);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
@@ -12,7 +13,11 @@
   border-radius: 30px;
   padding: 34px 30px 30px;
   text-align: left;
-  box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  box-shadow:
+    var(--glass-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -20px 42px rgba(7, 12, 26, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.12);
   position: relative;
   overflow: hidden;
 }
@@ -24,6 +29,19 @@
   background: linear-gradient(115deg, rgba(20, 184, 166, 0.12) 0%, rgba(245, 158, 11, 0.1) 48%, transparent 70%);
   pointer-events: none;
   border-radius: inherit;
+  z-index: -2;
+}
+
+.App-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.25'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+  opacity: 0.18;
 }
 
 .hero-top-row {
@@ -116,7 +134,7 @@
 }
 
 .hero-subtitle {
-  color: var(--text-muted);
+  color: rgba(233, 244, 255, 0.9);
   margin-top: 10px;
   max-width: 760px;
   font-size: 17px;
@@ -130,9 +148,10 @@
   gap: 10px;
 }
 
-.hero-steps span {
+.hero-step {
   display: inline-flex;
   align-items: center;
+  gap: 8px;
   border-radius: 999px;
   padding: 7px 13px;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -142,6 +161,31 @@
   font-weight: 700;
   letter-spacing: 0.03em;
   text-transform: uppercase;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.hero-step.active {
+  border-color: rgba(20, 184, 166, 0.5);
+  background: rgba(20, 184, 166, 0.2);
+  box-shadow: 0 0 0 1px rgba(20, 184, 166, 0.22);
+}
+
+.hero-step.complete {
+  border-color: rgba(45, 212, 191, 0.45);
+  background: rgba(45, 212, 191, 0.18);
+  color: #c7fff7;
+}
+
+.hero-step .step-check {
+  font-size: 12px;
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.hero-step.complete .step-check {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .App-main {
@@ -149,6 +193,8 @@
 }
 
 .error-banner {
+  position: relative;
+  overflow: hidden;
   background: rgba(251, 113, 133, 0.1);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
@@ -162,27 +208,52 @@
   gap: 16px;
 }
 
+.error-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(125deg, rgba(251, 113, 133, 0.06) 0%, rgba(244, 63, 94, 0.02) 55%, transparent 80%);
+  pointer-events: none;
+}
+
 .error-banner p {
+  position: relative;
   white-space: pre-line;
   color: #fecdd3;
   font-size: 14px;
   line-height: 1.5;
 }
 
+.error-banner .error-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
 .error-banner button {
   border: none;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  padding: 8px 14px;
   color: var(--danger);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  padding: 6px 0;
   white-space: nowrap;
-  transition: opacity 0.15s ease;
+  transition: transform 0.15s ease, opacity 0.15s ease, border-color 0.2s ease;
+}
+
+.error-banner button.retry-btn {
+  color: #ffd59d;
+  border-color: rgba(245, 158, 11, 0.36);
+  background: rgba(245, 158, 11, 0.15);
 }
 
 .error-banner button:hover {
-  opacity: 0.7;
+  opacity: 0.9;
+  transform: translateY(-1px);
 }
 
 /* ── Results Wrapper ─────────────────────────────────────── */
@@ -208,6 +279,11 @@
 .reset-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 14px 28px var(--primary-glow);
+}
+
+.reset-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 18px var(--primary-glow);
 }
 
 @media (max-width: 768px) {

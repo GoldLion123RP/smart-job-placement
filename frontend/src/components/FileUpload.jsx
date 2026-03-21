@@ -1,4 +1,4 @@
-﻿import React, { useState, useCallback } from 'react';
+﻿import React, { useState, useCallback, useEffect } from 'react';
 import './FileUpload.css';
 
 const roles = [
@@ -20,10 +20,34 @@ const roleDisplayNames = {
 // Security: File size limit (5MB)
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
-function FileUpload({ onAnalyze, loading }) {
+function FileUpload({ onAnalyze, loading, onUploadStateChange }) {
   const [file, setFile] = useState(null);
   const [role, setRole] = useState('data_scientist');
   const [error, setError] = useState('');
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    if (typeof onUploadStateChange === 'function') {
+      onUploadStateChange(Boolean(file));
+    }
+  }, [file, onUploadStateChange]);
+
+  useEffect(() => {
+    if (!loading) {
+      setProgress(0);
+      return;
+    }
+
+    setProgress(7);
+    const timer = setInterval(() => {
+      setProgress((current) => {
+        if (current >= 92) return current;
+        return Math.min(92, current + Math.max(3, Math.round((100 - current) * 0.08)));
+      });
+    }, 450);
+
+    return () => clearInterval(timer);
+  }, [loading]);
 
   const handleFileChange = useCallback((e) => {
     const selectedFile = e.target.files?.[0];
@@ -125,6 +149,15 @@ function FileUpload({ onAnalyze, loading }) {
         <div className="loading-info">
           <p>⏱️ This may take 10-30 seconds (free tier server)</p>
           <p>🔍 Parsing PDF, extracting skills, analyzing gaps...</p>
+          <div className="progress-track" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}>
+            <div className="progress-fill" style={{ width: `${progress}%` }} />
+          </div>
+          <p className="progress-label">Analyzing... {progress}%</p>
+          <div className="loading-skeleton" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
         </div>
       )}
     </div>
