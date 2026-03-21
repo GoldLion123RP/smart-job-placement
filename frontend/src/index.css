@@ -1,18 +1,34 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Google+Sans+Text:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --bg: #f8fafd;
-  --surface: #ffffff;
-  --surface-soft: #eef3fd;
-  --text: #1f1f1f;
-  --text-muted: #5f6368;
-  --border: #d2d8e3;
-  --primary: #1a73e8;
-  --primary-strong: #155fc2;
-  --success: #137333;
-  --warning: #ea8600;
-  --danger: #c5221f;
-  --shadow: 0 12px 30px rgba(60, 64, 67, 0.1);
+  /* Glass surface tokens */
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-bg-strong: rgba(255, 255, 255, 0.14);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-border-strong: rgba(255, 255, 255, 0.32);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  --glass-blur: blur(18px);
+
+  /* Accent colours */
+  --primary: #818cf8;
+  --primary-strong: #6366f1;
+  --primary-glow: rgba(99, 102, 241, 0.45);
+  --success: #34d399;
+  --success-glow: rgba(52, 211, 153, 0.35);
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --danger-glow: rgba(248, 113, 113, 0.35);
+
+  /* Text */
+  --text: rgba(255, 255, 255, 0.95);
+  --text-muted: rgba(255, 255, 255, 0.58);
+  --text-dim: rgba(255, 255, 255, 0.38);
+
+  /* Keep legacy vars used inline */
+  --surface: rgba(255, 255, 255, 0.08);
+  --surface-soft: rgba(255, 255, 255, 0.05);
+  --border: rgba(255, 255, 255, 0.18);
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
 }
 
 * {
@@ -27,19 +43,53 @@ body,
 }
 
 body {
-  font-family: 'Google Sans Text', 'Roboto', 'Segoe UI', sans-serif;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  min-height: 100vh;
   background:
-    radial-gradient(circle at 0% 0%, rgba(26, 115, 232, 0.12), transparent 35%),
-    radial-gradient(circle at 100% 100%, rgba(52, 168, 83, 0.12), transparent 30%),
-    var(--bg);
+    radial-gradient(ellipse at 15% 20%, rgba(139, 92, 246, 0.35) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 75%, rgba(59, 130, 246, 0.30) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(16, 24, 40, 0.95) 0%, transparent 100%),
+    linear-gradient(135deg, #0d0d1a 0%, #0f172a 50%, #0d1117 100%);
+  background-attachment: fixed;
   color: var(--text);
+}
+
+/* Subtle floating orbs that add depth */
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::before {
+  width: 520px;
+  height: 520px;
+  top: -160px;
+  left: -160px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.18) 0%, transparent 70%);
+}
+
+body::after {
+  width: 480px;
+  height: 480px;
+  bottom: -140px;
+  right: -120px;
+  background: radial-gradient(circle, rgba(52, 211, 153, 0.14) 0%, transparent 70%);
+}
+
+#root {
+  position: relative;
+  z-index: 1;
 }
 
 h1,
 h2,
 h3,
 h4 {
-  font-family: 'Google Sans Text', 'Roboto', 'Segoe UI', sans-serif;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
   margin: 0;
 }
 
@@ -51,4 +101,13 @@ button,
 input,
 select {
   font: inherit;
+}
+
+/* Shared glass mixin-style utility */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
 }
