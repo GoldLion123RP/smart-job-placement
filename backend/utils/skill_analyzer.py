@@ -12,7 +12,17 @@ ROLE_SKILLS = {
     "software_engineer": ["python", "java", "javascript", "algorithms", "data structures", "system design", "git", "docker", "kubernetes", "rest api", "sql", "agile"],
     "web_developer": ["html", "css", "javascript", "react", "node.js", "responsive design", "rest api", "mongodb", "express", "git", "typescript"],
     "ml_engineer": ["python", "tensorflow", "pytorch", "mlops", "docker", "aws", "model deployment", "mlflow", "data engineering", "kubernetes", "airflow"],
-    "data_analyst": ["sql", "python", "excel", "tableau", "power bi", "statistics", "data visualization", "pandas", "numpy", "reporting"]
+    "data_analyst": ["sql", "python", "excel", "tableau", "power bi", "statistics", "data visualization", "pandas", "numpy", "reporting"],
+    "frontend_engineer": ["html", "css", "javascript", "typescript", "react", "next.js", "tailwind css", "accessibility", "testing", "vite", "git", "responsive design"],
+    "backend_engineer": ["python", "java", "node.js", "sql", "rest api", "microservices", "docker", "kubernetes", "redis", "postgresql", "system design", "testing"],
+    "fullstack_developer": ["html", "css", "javascript", "typescript", "react", "node.js", "python", "sql", "rest api", "docker", "git", "system design"],
+    "devops_engineer": ["linux", "bash", "docker", "kubernetes", "terraform", "ansible", "ci/cd", "aws", "azure", "monitoring", "prometheus", "grafana"],
+    "cloud_engineer": ["aws", "azure", "gcp", "terraform", "docker", "kubernetes", "networking", "iam", "serverless", "monitoring", "linux", "security"],
+    "data_engineer": ["python", "sql", "spark", "airflow", "etl", "data warehousing", "dbt", "kafka", "aws", "docker", "pandas", "data modeling"],
+    "ai_engineer": ["python", "machine learning", "deep learning", "pytorch", "tensorflow", "llms", "prompt engineering", "model deployment", "mlops", "vector databases", "rag", "docker"],
+    "mobile_developer": ["android", "ios", "kotlin", "swift", "react native", "flutter", "rest api", "testing", "git", "ui/ux", "state management", "mobile performance"],
+    "cybersecurity_analyst": ["network security", "siem", "incident response", "threat modeling", "vulnerability assessment", "owasp", "iam", "linux", "scripting", "risk assessment", "compliance", "forensics"],
+    "qa_engineer": ["test automation", "selenium", "playwright", "cypress", "api testing", "regression testing", "test planning", "bug tracking", "ci/cd", "performance testing", "quality assurance", "javascript"]
 }
 
 RESOURCES = {

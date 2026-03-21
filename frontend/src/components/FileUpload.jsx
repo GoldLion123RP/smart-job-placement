@@ -6,7 +6,17 @@ const roles = [
   'software_engineer',
   'web_developer',
   'ml_engineer',
-  'data_analyst'
+  'data_analyst',
+  'frontend_engineer',
+  'backend_engineer',
+  'fullstack_developer',
+  'devops_engineer',
+  'cloud_engineer',
+  'data_engineer',
+  'ai_engineer',
+  'mobile_developer',
+  'cybersecurity_analyst',
+  'qa_engineer'
 ];
 
 const roleDisplayNames = {
@@ -14,7 +24,17 @@ const roleDisplayNames = {
   'software_engineer': 'Software Engineer',
   'web_developer': 'Web Developer',
   'ml_engineer': 'ML Engineer',
-  'data_analyst': 'Data Analyst'
+  'data_analyst': 'Data Analyst',
+  'frontend_engineer': 'Frontend Engineer',
+  'backend_engineer': 'Backend Engineer',
+  'fullstack_developer': 'Fullstack Developer',
+  'devops_engineer': 'DevOps Engineer',
+  'cloud_engineer': 'Cloud Engineer',
+  'data_engineer': 'Data Engineer',
+  'ai_engineer': 'AI Engineer',
+  'mobile_developer': 'Mobile Developer',
+  'cybersecurity_analyst': 'Cybersecurity Analyst',
+  'qa_engineer': 'QA Engineer'
 };
 
 // Security: File size limit (5MB)

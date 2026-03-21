@@ -64,6 +64,46 @@ class CourseRecommender:
             'data_analyst': [
                 {'title': 'SQL Interview Questions', 'type': 'Practice', 'url': 'https://www.interviewquery.com/p/sql-interview-questions'},
                 {'title': 'Tableau Public Gallery', 'type': 'Projects', 'url': 'https://public.tableau.com/gallery'}
+            ],
+            'frontend_engineer': [
+                {'title': 'Frontend Interview Handbook', 'type': 'Practice', 'url': 'https://www.frontendinterviewhandbook.com/'},
+                {'title': 'Frontend Mentor Challenges', 'type': 'Projects', 'url': 'https://www.frontendmentor.io/challenges'}
+            ],
+            'backend_engineer': [
+                {'title': 'Backend Interview Questions', 'type': 'Practice', 'url': 'https://www.interviewbit.com/backend-developer-interview-questions/'},
+                {'title': 'System Design Primer', 'type': 'Conceptual', 'url': 'https://github.com/donnemartin/system-design-primer'}
+            ],
+            'fullstack_developer': [
+                {'title': 'Full Stack Open', 'type': 'Projects', 'url': 'https://fullstackopen.com/en/'},
+                {'title': 'LeetCode Problem Set', 'type': 'Coding Practice', 'url': 'https://leetcode.com/problemset/all/'}
+            ],
+            'devops_engineer': [
+                {'title': 'DevOps Interview Questions', 'type': 'Practice', 'url': 'https://www.interviewbit.com/devops-interview-questions/'},
+                {'title': 'Kubernetes By Example', 'type': 'Hands-on', 'url': 'https://kubernetesbyexample.com/'}
+            ],
+            'cloud_engineer': [
+                {'title': 'AWS Skill Builder', 'type': 'Hands-on', 'url': 'https://skillbuilder.aws/'},
+                {'title': 'Azure Architecture Center', 'type': 'Conceptual', 'url': 'https://learn.microsoft.com/en-us/azure/architecture/'}
+            ],
+            'data_engineer': [
+                {'title': 'Data Engineering Zoomcamp', 'type': 'Projects', 'url': 'https://github.com/DataTalksClub/data-engineering-zoomcamp'},
+                {'title': 'SQL Interview Questions', 'type': 'Practice', 'url': 'https://www.interviewquery.com/p/sql-interview-questions'}
+            ],
+            'ai_engineer': [
+                {'title': 'Hugging Face Course', 'type': 'Hands-on', 'url': 'https://huggingface.co/learn'},
+                {'title': 'LLM Engineering Guide', 'type': 'Conceptual', 'url': 'https://github.com/mlabonne/llm-course'}
+            ],
+            'mobile_developer': [
+                {'title': 'Android Developers Guides', 'type': 'Conceptual', 'url': 'https://developer.android.com/guide'},
+                {'title': 'Flutter Codelabs', 'type': 'Hands-on', 'url': 'https://docs.flutter.dev/codelabs'}
+            ],
+            'cybersecurity_analyst': [
+                {'title': 'TryHackMe Learning Paths', 'type': 'Hands-on', 'url': 'https://tryhackme.com/r/resources/blog/free_path'},
+                {'title': 'OWASP Top 10', 'type': 'Conceptual', 'url': 'https://owasp.org/www-project-top-ten/'}
+            ],
+            'qa_engineer': [
+                {'title': 'Playwright Docs', 'type': 'Hands-on', 'url': 'https://playwright.dev/docs/intro'},
+                {'title': 'Cypress Best Practices', 'type': 'Practice', 'url': 'https://docs.cypress.io/guides/references/best-practices'}
             ]
         }
         return interview_resources.get(role, [])
