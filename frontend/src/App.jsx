@@ -106,7 +106,7 @@ function App() {
 
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 45000);
+      const timeoutId = setTimeout(() => controller.abort(), 90000);
 
       const response = await fetch(`${API_URL}/api/analyze`, {
         method: 'POST',
@@ -138,7 +138,13 @@ function App() {
       setResults(data);
     } catch (err) {
       console.error('Error:', err);
-      setApiHealthy(false);
+      const isNetworkError = err instanceof TypeError;
+      if (isNetworkError) {
+        setApiHealthy(false);
+      } else if (typeof err?.statusCode === 'number') {
+        // Backend responded with an HTTP status, so API is reachable.
+        setApiHealthy(true);
+      }
       setError(getFriendlyErrorMessage(err, err?.statusCode, apiHealthy));
     } finally {
       setLoading(false);

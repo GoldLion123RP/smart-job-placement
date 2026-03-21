@@ -12,18 +12,23 @@ app = Flask(__name__)
 # For development, use specific origins; for production, configure properly
 # CORS Configuration for GitHub Pages and local development
 # Add your GitHub Pages URL to this list
-CORS_ORIGINS = os.environ.get('CORS_ORIGINS', 'http://localhost:5173,http://localhost:3000')
+DEFAULT_CORS_ORIGINS = ','.join([
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://goldlion123rp.github.io'
+])
+CORS_ORIGINS = os.environ.get('CORS_ORIGINS', DEFAULT_CORS_ORIGINS)
 # Also allow GitHub Pages URL from environment variable if provided
-github_pages = os.environ.get('GITHUB_PAGES_URL', '')
-cors_origins = CORS_ORIGINS.split(',')
-if github_pages:
+github_pages = os.environ.get('GITHUB_PAGES_URL', 'https://goldlion123rp.github.io').strip()
+cors_origins = [origin.strip() for origin in CORS_ORIGINS.split(',') if origin.strip()]
+if github_pages and github_pages not in cors_origins:
     cors_origins.append(github_pages)
 
 CORS(app, 
     origins=cors_origins,
-    methods=['POST', 'GET'],
+    methods=['POST', 'GET', 'OPTIONS'],
     allow_headers=['Content-Type'],
-    supports_credentials=True
+    supports_credentials=False
 )
 
 # Security: Set secret key for sessions (use environment variable in production)
