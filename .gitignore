@@ -26,3 +26,6 @@ frontend/.env.local
 !frontend/.env.example
 
 frontend/dist/
+
+
+DEMO_SCRIPT.md
