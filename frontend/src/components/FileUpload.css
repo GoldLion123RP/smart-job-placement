@@ -40,7 +40,7 @@
 .upload-container form {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(220px, 0.9fr);
-  align-items: end;
+  align-items: start;
   gap: 22px;
   position: relative;
 }
