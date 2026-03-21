@@ -3,6 +3,7 @@
 An AI-powered full-stack web application that analyzes resumes, identifies skill gaps against target job roles, predicts placement probability, and recommends personalized learning resources.
 
 🔗 **Live Demo:** [https://GoldLion123RP.github.io/smart-job-placement](https://GoldLion123RP.github.io/smart-job-placement)
+
 🔗 **Backend API:** [https://smart-job-placement.onrender.com](https://smart-job-placement.onrender.com)
 
 ---
