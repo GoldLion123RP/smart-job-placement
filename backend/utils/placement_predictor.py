@@ -5,9 +5,27 @@ class PlacementPredictor:
         pass
 
     def predict_placement(self, features, gap_analysis=None):
-        skill_count = len(features['skills']['detected'])
-        experience = features['experience']
-        education_score = len(features['education']) * 10
+        features = features or {}
+        skills = features.get('skills') if isinstance(features, dict) else {}
+        if not isinstance(skills, dict):
+            skills = {}
+
+        detected = skills.get('detected', [])
+        if not isinstance(detected, list):
+            detected = []
+
+        education = features.get('education', []) if isinstance(features, dict) else []
+        if not isinstance(education, list):
+            education = []
+
+        experience = features.get('experience', 0) if isinstance(features, dict) else 0
+        try:
+            experience = int(experience)
+        except (TypeError, ValueError):
+            experience = 0
+
+        skill_count = len(detected)
+        education_score = len(education) * 10
 
         # Base score from resume features
         base_score = (min(skill_count, 15) * 3) + (min(experience, 10) * 5) + min(education_score, 30)

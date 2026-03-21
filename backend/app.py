@@ -133,12 +133,16 @@ def analyze_resume():
             }
         })
 
-    # Security: Don't expose raw error messages to clients
-    except (ValueError, KeyError, TypeError) as e:
+    except ValueError as e:
+        # Return actionable, sanitized parse/validation messages to the client.
+        message = str(e).strip() or "Invalid input provided"
+        app.logger.warning(f"Validation error: {message}")
+        return jsonify({"error": message}), 400
+    except (KeyError, TypeError) as e:
         app.logger.error(f"Validation error: {str(e)}")
         return jsonify({"error": "Invalid input provided"}), 400
     except Exception as e:
-        app.logger.error(f"Analysis error: {str(e)}")
+        app.logger.exception(f"Analysis error: {str(e)}")
         return jsonify({"error": "An error occurred while analyzing your resume. Please try again."}), 500
     finally:
         # Security: Always clean up temp file

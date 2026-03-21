@@ -1,4 +1,5 @@
 ﻿import fitz  # PyMuPDF
+from pypdf import PdfReader
 import re
 import spacy
 import logging
@@ -37,6 +38,45 @@ class ResumeParser:
                 if ' ' not in skill:  # Only compile for single-word skills
                     self._skill_patterns[skill] = re.compile(r'\b' + re.escape(skill) + r'\b')
 
+    def _has_meaningful_text(self, text):
+        """Return True when extracted text likely contains readable resume content."""
+        if not text:
+            return False
+        # Require a minimum number of alphanumeric characters to avoid empty/scanned PDFs.
+        return len(re.findall(r'[A-Za-z0-9]', text)) >= 40
+
+    def _extract_with_pymupdf(self, pdf_path):
+        doc = None
+        try:
+            doc = fitz.open(pdf_path)
+            if len(doc) > 100:
+                logger.warning(f"PDF has too many pages ({len(doc)}), limiting extraction")
+
+            text_parts = []
+            for page in doc[:100]:
+                text_parts.append(page.get_text() or "")
+
+            text = " ".join(text_parts)
+            if len(text) > 500000:
+                logger.warning("PDF text too large, truncating")
+                text = text[:500000]
+            return text
+        finally:
+            if doc:
+                doc.close()
+
+    def _extract_with_pypdf(self, pdf_path):
+        with open(pdf_path, 'rb') as pdf_file:
+            reader = PdfReader(pdf_file)
+            text_parts = []
+            for page in reader.pages[:100]:
+                text_parts.append(page.extract_text() or "")
+
+        text = " ".join(text_parts)
+        if len(text) > 500000:
+            text = text[:500000]
+        return text
+
     def _load_spacy_model(self):
         """Load spaCy model with proper error handling"""
         try:
@@ -58,30 +98,24 @@ class ResumeParser:
 
     def extract_text_from_pdf(self, pdf_path):
         """Extract text from PDF with error handling"""
-        doc = None
         try:
-            doc = fitz.open(pdf_path)
-            # Security: Limit number of pages to prevent DoS
-            if len(doc) > 100:
-                logger.warning(f"PDF has too many pages ({len(doc)}), limiting extraction")
-            
-            text_parts = []
-            for page in doc[:100]:  # Limit to first 100 pages
-                text_parts.append(page.get_text())
-            
-            # Security: Limit total text length
-            text = " ".join(text_parts)
-            if len(text) > 500000:  # 500KB limit
-                logger.warning("PDF text too large, truncating")
-                text = text[:500000]
-            
-            return text
-        except Exception as e:
-            logger.error(f"Error extracting PDF text: {e}")
-            raise ValueError(f"Failed to parse PDF: {str(e)}")
-        finally:
-            if doc:
-                doc.close()
+            text = self._extract_with_pymupdf(pdf_path)
+        except Exception as fitz_error:
+            logger.warning(f"PyMuPDF extraction failed, trying pypdf fallback: {fitz_error}")
+            try:
+                text = self._extract_with_pypdf(pdf_path)
+            except Exception as pypdf_error:
+                logger.error(f"PDF extraction failed with both parsers: {pypdf_error}")
+                raise ValueError(
+                    "Could not read this PDF. Please re-export it as a standard, unlocked PDF and try again."
+                )
+
+        if not self._has_meaningful_text(text):
+            raise ValueError(
+                "Could not extract readable text from this PDF. If it is scanned/image-based, run OCR or export a text PDF and retry."
+            )
+
+        return text
 
     def clean_text(self, text):
         # Optimization: Use pre-compiled patterns
