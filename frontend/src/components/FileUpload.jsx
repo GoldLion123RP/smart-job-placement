@@ -79,7 +79,7 @@ function FileUpload({ onAnalyze, loading }) {
   return (
     <div className="upload-container">
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
+        <div className="form-group file-group">
           <label>📄 Upload Resume (PDF only, max 5MB)</label>
           <input
             type="file"
@@ -94,7 +94,7 @@ function FileUpload({ onAnalyze, loading }) {
           {error && <p className="error-message">❌ {error}</p>}
         </div>
 
-        <div className="form-group">
+        <div className="form-group role-group">
           <label>🎯 Target Job Role</label>
           <select
             value={role}
@@ -109,7 +109,7 @@ function FileUpload({ onAnalyze, loading }) {
           </select>
         </div>
 
-        <button type="submit" disabled={loading || !file || error}>
+        <button className="analyze-btn" type="submit" disabled={loading || !file || error}>
           {loading ? (
             <>
               <span className="spinner"></span>

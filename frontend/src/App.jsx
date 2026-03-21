@@ -147,11 +147,22 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <div className={`status-pill ${apiHealthy ? 'ok' : apiHealthy === false ? 'down' : 'checking'}`}>
-          {apiHealthy ? 'API Connected' : apiHealthy === false ? 'API Unreachable' : 'Checking API...'}
+        <div className="hero-top-row">
+          <div className={`status-pill ${apiHealthy ? 'ok' : apiHealthy === false ? 'down' : 'checking'}`}>
+            {apiHealthy ? 'API Connected' : apiHealthy === false ? 'API Unreachable' : 'Checking API...'}
+          </div>
+          <span className="hero-chip">AI Career Readiness Suite</span>
         </div>
-        <h1>Smart Job Placement Analyzer</h1>
-        <p>Upload your resume and discover your skill gaps!</p>
+        <h1>
+          Smart Job Placement
+          <span className="title-accent"> Analyzer</span>
+        </h1>
+        <p className="hero-subtitle">Upload your resume, benchmark your skills, and get a focused learning path in under a minute.</p>
+        <div className="hero-steps" aria-hidden="true">
+          <span>01 Upload</span>
+          <span>02 Analyze</span>
+          <span>03 Improve</span>
+        </div>
       </header>
       <main className="App-main">
         {!results ? (
